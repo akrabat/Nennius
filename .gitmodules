@@ -1,6 +1,3 @@
 [submodule "vendor/EdpCommon"]
 	path = vendor/EdpCommon
 	url = git://github.com/EvanDotPro/EdpCommon.git
-[submodule "vendor/EdpUser"]
-	path = vendor/EdpUser
-	url = git://github.com/EvanDotPro/EdpUser.git
