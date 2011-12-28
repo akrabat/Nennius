@@ -2,9 +2,10 @@
 return array(
     'modules' => array(
         'Application',
+        'VendorOverridesPre',
         'EdpCommon',
         'EdpUser',
-        'VendorOverride',
+        'VendorOverridesPost',
     ),
     'module_listener_options' => array( 
         'config_cache_enabled' => false,
