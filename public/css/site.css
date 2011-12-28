@@ -1,0 +1,19 @@
+#captcha-input-label label {
+    width: 300px;
+    padding-left: 10px;
+    text-align: left;
+}
+
+#captcha-element pre {
+    clear: left;
+    line-height: 15px;
+    width: 360px;
+}
+
+dl dt, dl dd {
+    margin-bottom: 3px;
+}
+
+label {
+    margin-right: 5px;
+}
