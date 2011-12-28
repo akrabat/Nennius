@@ -48,7 +48,7 @@
       <?php echo $this->raw('content'); ?>
 
       <footer>
-        <p>&copy; 2011 - <?php echo date('Y') ?> by Rob Allen. All rights reserved.</p>
+        <p>&copy; 2011 <?php echo date('Y') != 2011 ?  '-'.date('Y') : ''; ?> by Rob Allen. All rights reserved.</p>
       </footer>
 
     </div> <!-- /container -->

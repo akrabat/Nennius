@@ -74,11 +74,12 @@ class Module implements AutoloaderProvider
 
         $view->plugin('headTitle')->setSeparator(' - ')
                                   ->setAutoEscape(false)
-                                  ->append('ZF2 Skeleton Application');
+                                  ->append('Nennius');
 
         $basePath = $app->getRequest()->detectBaseUrl();
 
         $view->plugin('headLink')->appendStylesheet($basePath . 'css/bootstrap.min.css');
+        $view->plugin('headLink')->appendStylesheet($basePath . 'css/site.css');
 
         $html5js = '<script src="' . $basePath . 'js/html5.js"></script>';
         $view->plugin('placeHolder')->__invoke('html5js')->set($html5js);
