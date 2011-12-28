@@ -2,7 +2,6 @@
 return array(
     'modules' => array(
         'Application',
-        'VendorOverridesPre',
         'EdpCommon',
         'EdpUser',
         'VendorOverridesPost',
