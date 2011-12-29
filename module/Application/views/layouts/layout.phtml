@@ -37,11 +37,15 @@
           <a class="brand" href="<?php echo $this->url('home') ?>">Nennius</a>
 
           <ul class="nav">
-            <li class="active"><a href="<?php echo $this->url('home') ?>">Home</a></li>
+            <li <?php /*class="active" */?>><a href="<?php echo $this->url('home') ?>">Home</a></li>
+            <?php if($this->edpUser()): ?>
+            <li><a href="<?php echo $this->url('edpuser/logout') ?>">Logout</a></li>
+            <?php else : ?>
+            <li><a href="<?php echo $this->url('edpuser/login') ?>">Login</a></li>
+            <?php endif; ?>
           </ul>
         </div>
       </div>
-
     </div>
 
     <div class="container">
