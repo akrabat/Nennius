@@ -38,6 +38,7 @@
 
           <ul class="nav">
             <li <?php /*class="active" */?>><a href="<?php echo $this->url('home') ?>">Home</a></li>
+            <li><a href="<?php echo $this->url('photos/upload') ?>">Upload</a></li>
             <?php if($this->edpUser()): ?>
             <li><a href="<?php echo $this->url('edpuser/logout') ?>">Logout</a></li>
             <?php else : ?>

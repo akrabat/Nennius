@@ -5,6 +5,7 @@ return array(
         'EdpCommon',
         'EdpUser',
         'VendorOverridesPost',
+        'Gallery',
     ),
     'module_listener_options' => array( 
         'config_cache_enabled' => false,
