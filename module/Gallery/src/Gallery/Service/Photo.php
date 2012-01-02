@@ -31,48 +31,44 @@ class Photo
     public function createFromForm(UploadForm $form)
     {
         $uploadedData = $form->getValues();
-        LDBG($uploadedData, 'uploadedData');
+
         $class = Module::getOption('photo_model_class');
         $photo = new $class;
         $photo->setTitle($form->getValue('title'));
         $photo->setDescription($form->getValue('description'));
 
-        LDBG($photo, 'photo');
-
         $this->events()->trigger(__FUNCTION__, $this, array('photo' => $photo, 'form' => $form));
         $this->photoMapper->persist($photo);
-exit;
+
         // retrieve file
+
+        $filePath = realpath(Module::getOption('file_path')) . '/' . $photo->getId();
+        if (!is_dir($filePath)) {
+            mkdir($filePath);
+        }
+        $filename = substr(md5(microtime() . mt_rand()),0,10) . '.' . pathinfo($form->file->getValue(), PATHINFO_EXTENSION);
+        $form->file->setDestination($filePath);
+        $form->file->addFilter('Rename', $filename);
+        $form->file->setOptions(array('useByteString' => false));
+        $photo->setFilename($form->file->getValue());
+
         if (!$form->file->receive()) {
             print "Upload error";
         }
-
+        $info = $form->file->getFileInfo();
         $fullFilePath = $form->file->getFileName();
-        LDBG($fullFilePath);
 
+        $photo->setFilenameOnDisk($filename);
+        $photo->setMimeType($form->file->getMimeType());
+        $photo->setSize($form->file->getFileSize());
 
-        exit;
+        $imageSize = getimagesize($fullFilePath);
+        $photo->setWidth($imageSize[0]);
+        $photo->setHeight($imageSize[1]);
 
-        $user = new $class;
-        $user->setEmail($form->getValue('email'))
-        ->setPassword($this->hashPassword($form->getValue('password')))
-        ->setRegisterIp($_SERVER['REMOTE_ADDR'])
-        ->setRegisterTime(new DateTime('now'))
-        ->setEnabled(true);
-        if (Module::getOption('require_activation')) {
-            $user->setActive(false);
-        } else {
-            $user->setActive(true);
-        }
-        if (Module::getOption('enable_username')) {
-            $user->setUsername($form->getValue('username'));
-        }
-        if (Module::getOption('enable_display_name')) {
-            $user->setDisplayName($form->getValue('display_name'));
-        }
-        $this->events()->trigger(__FUNCTION__, $this, array('user' => $user, 'form' => $form));
-        $this->userMapper->persist($user);
-        return $user;
+        $this->photoMapper->persist($photo);
+
+        return $photo;
     }
 
     /**

@@ -2,6 +2,7 @@
 return array(
     'gallery' => array(
         'photo_model_class' => 'Gallery\Model\Photo',
+        'file_path' => 'data/photos',
     ),
     'di' => array(
         'instance' => array(

@@ -13,10 +13,16 @@ class PhotoMapper extends DbMapperAbstract implements PhotoMapperInterface
     public function persist(PhotoInterface $photo)
     {
         $data = $photo->toArray();
-        LDBG($data, 'data');exit;
+        foreach ($data as $key => $value) {
+            if ($value instanceof \DateTime) {
+                $value->setTimeZone(new \DateTimeZone('UTC'));
+                $data[$key] = $value->format('Y-m-d H:i:s');
+            }
+        }
+
         $this->events()->trigger(__FUNCTION__ . '.pre', $this, array('data' => $data, 'photo' => $photo));
         $db = $this->getWriteAdapter();
-        LDBG($db);
+
         if ($photo->getId() > 0) {
             $db->update($this->getTableName(), (array) $data, $db->quoteInto('id = ?', $photo->getId()));
         } else {
@@ -24,7 +30,7 @@ class PhotoMapper extends DbMapperAbstract implements PhotoMapperInterface
             $id = $db->lastInsertId();
             $photo->setId($id);
         }
-LDBGD($photo, 'photo');
+
         return $photo;
     }
 

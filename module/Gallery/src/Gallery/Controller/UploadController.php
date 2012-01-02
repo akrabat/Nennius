@@ -30,13 +30,7 @@ class UploadController extends ActionController
                 return $this->redirect()->toRoute('photos/upload');
             } else {
                 $this->getPhotoService()->createFromForm($form);
-                if (Module::getOption('login_after_registration')) {
-                    $auth = $this->getUserService()->authenticate($request->post()->get('email'), $request->post()->get('password'));
-                    if (false !== $auth) {
-                        return $this->redirect()->toRoute('edpuser');
-                    }
-                }
-                return $this->redirect()->toRoute('photos/');
+                return $this->redirect()->toRoute('photos');
             }
         }
         return array(

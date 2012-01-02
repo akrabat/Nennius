@@ -15,10 +15,11 @@ class Photo extends ModelAbstract implements PhotoInterface
     protected $size;
     protected $width;
     protected $height;
+    protected $filename_on_disk;
     protected $date_created;
 
     /*
-     * @return int id
+     * @return int $id
      */
     public function getId()
     {
@@ -36,7 +37,7 @@ class Photo extends ModelAbstract implements PhotoInterface
     }
 
     /*
-     * @return int title
+     * @return int $title
      */
     public function getTitle()
     {
@@ -54,7 +55,7 @@ class Photo extends ModelAbstract implements PhotoInterface
     }
 
     /*
-     * @return int description
+     * @return int $description
      */
     public function getDescription()
     {
@@ -72,7 +73,7 @@ class Photo extends ModelAbstract implements PhotoInterface
     }
 
     /*
-     * @return int filename
+     * @return int $filename
      */
     public function getFilename()
     {
@@ -90,7 +91,7 @@ class Photo extends ModelAbstract implements PhotoInterface
     }
 
     /*
-     * @return int mimeType
+     * @return int $mimeType
      */
     public function getMimeType()
     {
@@ -103,12 +104,12 @@ class Photo extends ModelAbstract implements PhotoInterface
      */
     public function setMimeType($mimeType)
     {
-        $this->mimeType = $mime_type;
+        $this->mime_type = $mimeType;
         return $this;
     }
 
     /*
-     * @return int size
+     * @return int $size
      */
     public function getSize()
     {
@@ -126,7 +127,7 @@ class Photo extends ModelAbstract implements PhotoInterface
     }
 
     /*
-     * @return int width
+     * @return int $width
      */
     public function getWidth()
     {
@@ -144,7 +145,7 @@ class Photo extends ModelAbstract implements PhotoInterface
     }
 
     /*
-     * @return int height
+     * @return int $height
      */
     public function getHeight()
     {
@@ -160,9 +161,26 @@ class Photo extends ModelAbstract implements PhotoInterface
         $this->height = $height;
         return $this;
     }
+    /*
+     * @return string $filenameOnDisk
+     */
+    public function getFilenameOnDisk()
+    {
+        return $this->filename_on_disk;
+    }
+
+    /**
+     * @param string $filenameOnDisk the value to be set
+     * @return Photo
+     */
+    public function setFilenameOnDisk($filenameOnDisk)
+    {
+        $this->filename_on_disk = $filenameOnDisk;
+        return $this;
+    }
 
     /*
-     * @return DateTime dateCreated
+     * @return DateTime $dateCreated
      */
     public function getDateCreated()
     {
