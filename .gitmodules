@@ -1,3 +1,0 @@
-[submodule "vendor/EdpCommon"]
-	path = vendor/EdpCommon
-	url = git://github.com/EvanDotPro/EdpCommon.git
