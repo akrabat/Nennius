@@ -7,8 +7,11 @@ return array(
     'di' => array(
         'instance' => array(
             'alias' => array(
+                // Controllers
                 'upload'                => 'Gallery\Controller\UploadController',
                 'album'                 => 'Gallery\Controller\AlbumController',
+
+                // Other aliases
                 'gallery_upload_form'   => 'Gallery\Form\Upload',
                 'gallery_photo_service' => 'Gallery\Service\Photo',
                 'gallery_photo_mapper'  => 'Gallery\Model\PhotoMapper',
@@ -39,12 +42,13 @@ return array(
     ),
     'routes' => array(
         'photos' => array(
-            'type' => 'Literal',
+            'type' => 'Zend\Mvc\Router\Http\Segment',
             'priority' => 100,
             'options' => array(
-                'route' => '/photos',
+                'route' => '/photos/[:username]',
                 'defaults' => array(
                     'controller' => 'album',
+                    'username' => '',
                 ),
             ),
             'may_terminate' => true,

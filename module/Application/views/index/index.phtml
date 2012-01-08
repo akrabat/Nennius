@@ -1,3 +1,12 @@
-  <div class="hero-unit">
+<div class="hero-unit">
     <h1>Latest photos</h1>
-  </div>
+</div>
+
+<?php foreach($latest as $photo) : ?>
+<div class="thumbnail">
+<img src="" />
+<?php LDBG($photo->thumbnailUrl(200, 200, 'square'));?>
+<?php echo $photo->getFilename();?><br>
+</div>
+<?php endforeach; ?>
+

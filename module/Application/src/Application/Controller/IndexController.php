@@ -6,8 +6,14 @@ use Zend\Mvc\Controller\ActionController;
 
 class IndexController extends ActionController
 {
+    protected $photoService;
+
     public function indexAction()
     {
-        return array();
+        // Rather than use DI, let's use the Service locator this time
+        /* @var \Gallery\Photo\Mapper $mapper */
+        $mapper = $this->getLocator()->get('gallery_photo_mapper');
+        $latest = $mapper->fetchLatest();
+        return array('latest' => $latest);
     }
 }

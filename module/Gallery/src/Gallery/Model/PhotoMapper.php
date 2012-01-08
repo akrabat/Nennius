@@ -34,6 +34,25 @@ class PhotoMapper extends DbMapperAbstract implements PhotoMapperInterface
         return $photo;
     }
 
+    public function fetchLatest($count=10)
+    {
+        $db = $this->getReadAdapter();
+        $select = $db->select()
+            ->from($this->getTableName())
+            ->order('date_created DESC');
+        $this->events()->trigger(__FUNCTION__ . '.pre', $this, array('query' => $select));
+        $results = $db->fetchAll($select);
+
+        $rows = array();
+        $modelClass = Module::getOption('photo_model_class');
+        foreach ($results as $result) {
+            $rows[] = $modelClass::fromArray($result);
+        }
+
+        $this->events()->trigger(__FUNCTION__ . '.post', $this, array('rows' => $rows));
+        return $rows;
+    }
+
     public function findById($id)
     {
         $db = $this->getReadAdapter();

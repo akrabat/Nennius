@@ -22,7 +22,7 @@ class Photo
      */
     protected $events;
 
-   /**
+    /**
      * createFromForm
      *
      * @param UploadForm $form

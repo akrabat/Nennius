@@ -203,4 +203,8 @@ class Photo extends ModelAbstract implements PhotoInterface
         }
         return $this;
     }
+
+    public function thumbnailUrl($width, $height, $type='bounding')
+    {
+    }
 }
