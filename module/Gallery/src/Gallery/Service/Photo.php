@@ -6,6 +6,7 @@ use Gallery\Form\Upload as UploadForm,
     Gallery\Module,
     Gallery\Model\PhotoMapper,
     Zend\EventManager\EventCollection,
+    ZfcUser\Model\User,
     Zend\EventManager\EventManager;
 
 class Photo
@@ -28,7 +29,7 @@ class Photo
      * @param UploadForm $form
      * @return Gallery\Entity\Photo
      */
-    public function createFromForm(UploadForm $form)
+    public function createFromForm(UploadForm $form, User $user)
     {
         $uploadedData = $form->getValues();
 
@@ -69,6 +70,11 @@ class Photo
         $this->photoMapper->persist($photo);
 
         return $photo;
+    }
+
+    public function fetchLatestFor($displayname, $count)
+    {
+        return $this->photoMapper->fetchLatestFor($displayname, $count);
     }
 
     /**

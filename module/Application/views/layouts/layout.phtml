@@ -17,7 +17,7 @@
 
     <!-- Le styles -->
     <?php echo $this->headLink() ?>
-    
+
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -39,10 +39,10 @@
           <ul class="nav">
             <li <?php /*class="active" */?>><a href="<?php echo $this->url('home') ?>">Home</a></li>
             <li><a href="<?php echo $this->url('photos/upload') ?>">Upload</a></li>
-            <?php if($this->edpUser()): ?>
-            <li><a href="<?php echo $this->url('edpuser/logout') ?>">Logout</a></li>
+            <?php if($this->zfcUserIdentity()): ?>
+            <li><a href="<?php echo $this->url('zfcuser/logout') ?>">Logout</a></li>
             <?php else : ?>
-            <li><a href="<?php echo $this->url('edpuser/login') ?>">Login</a></li>
+            <li><a href="<?php echo $this->url('zfcuser/login') ?>">Login</a></li>
             <?php endif; ?>
           </ul>
         </div>
@@ -53,7 +53,7 @@
       <?php echo $this->raw('content'); ?>
 
       <footer>
-        <p>&copy; 2011 <?php echo date('Y') != 2011 ?  '-'.date('Y') : ''; ?> by Rob Allen. All rights reserved.</p>
+        <p>&copy; 2011<?php echo date('Y') != 2011 ?  ', '.date('Y') : ''; ?> by Rob Allen. All rights reserved.</p>
       </footer>
 
     </div> <!-- /container -->

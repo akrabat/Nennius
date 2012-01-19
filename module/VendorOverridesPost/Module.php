@@ -12,8 +12,8 @@ class Module implements AutoloaderProvider
     {
         $events = StaticEventManager::getInstance();
 
-        // Override EdpUser to move the display name field to the top
-        $events->attach('EdpUser\Form\Register', 'init', function($e) {
+        // Override ZfcUser to move the display name field to the top
+        $events->attach('ZfcUser\Form\Register', 'init', function($e) {
             $form = $e->getTarget();
             $displayName = $form->getElement('display_name');
             $displayName->setOrder(10);

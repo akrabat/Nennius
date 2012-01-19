@@ -4,7 +4,7 @@ namespace Gallery\Controller;
 
 use Zend\Mvc\Controller\ActionController,
     Zend\Mvc\Router\RouteStack,
-    EdpUser\Service\User as UserService,
+    ZfcUser\Service\User as UserService,
     Zend\Controller\Action\Helper\FlashMessenger,
     Gallery\Service\Photo as PhotoService;
 
@@ -16,30 +16,24 @@ class AlbumController extends ActionController
 
     public function indexAction()
     {
-        if (!$this->getAuthService()->hasIdentity()) {
-            return $this->redirect()->toRoute('edpuser/login');
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            return $this->redirect()->toRoute('home');
         }
+        
         $event    = $this->getEvent();
         $matches  = $event->getRouteMatch();
-        $username = $matches->getParam('username', false);
-        if (!$username) {
-            var_dump($this->getAuthService()->getIdentity());
+        $displayname = $matches->getParam('displayname', '');
+
+        if (empty($displayname)) {
+            // redirect to /photos/{displayname}
+            assert('test');
         }
 
+        $images = $this->getPhotoService()->fetchLatestFor($displayname, 20);
 
-        $images = array();
         return array(
             'images' => $images,
         );
-    }
-
-    public function getAuthService()
-    {
-        if (null === $this->authService) {
-            $userService = $this->getLocator()->get('edpuser_user_service');
-            $this->authService = $userService->getAuthService();
-        }
-        return $this->authService;
     }
 
     /**

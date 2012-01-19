@@ -3,7 +3,7 @@
 namespace Gallery\Model;
 
 use DateTime,
-    EdpCommon\Model\ModelAbstract;
+    ZfcBase\Model\ModelAbstract;
 
 class Photo extends ModelAbstract implements PhotoInterface
 {
@@ -18,6 +18,13 @@ class Photo extends ModelAbstract implements PhotoInterface
     protected $filename_on_disk;
     protected $date_created;
 
+
+    public function thumbnailUrl($width, $height, $type='bounding')
+    {
+    }
+
+    // -- getters and setters --
+    
     /*
      * @return int $id
      */
@@ -202,9 +209,5 @@ class Photo extends ModelAbstract implements PhotoInterface
             $this->date_created = new DateTime($dateCreated);
         }
         return $this;
-    }
-
-    public function thumbnailUrl($width, $height, $type='bounding')
-    {
     }
 }

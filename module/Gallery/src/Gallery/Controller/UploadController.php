@@ -4,20 +4,19 @@ namespace Gallery\Controller;
 
 use Zend\Mvc\Controller\ActionController,
     Zend\Mvc\Router\RouteStack,
-    EdpUser\Service\User as UserService,
+    ZfcUser\Service\User as UserService,
     Zend\Controller\Action\Helper\FlashMessenger,
     Gallery\Service\Photo as PhotoService;
 
 class UploadController extends ActionController
 {
     protected $uploadForm;
-    protected $authService;
     protected $photoService;
 
     public function indexAction()
     {
-        if (!$this->getAuthService()->hasIdentity()) {
-            return $this->redirect()->toRoute('edpuser/login');
+        if (!$this->zfcUserAuthentication()->hasIdentity()) {
+            return $this->redirect()->toRoute('zfcuser/login');
         }
         $request = $this->getRequest();
         $form = $this->getUploadForm();
@@ -29,7 +28,7 @@ class UploadController extends ActionController
                 $this->flashMessenger()->setNamespace('gallery-upload-form')->addMessage($request->post()->toArray());
                 return $this->redirect()->toRoute('photos/upload');
             } else {
-                $this->getPhotoService()->createFromForm($form);
+                $this->getPhotoService()->createFromForm($form, $this->zfcUserAuthentication()->getIdentity());
                 return $this->redirect()->toRoute('photos');
             }
         }
@@ -49,15 +48,6 @@ class UploadController extends ActionController
             }
         }
         return $this->uploadForm;
-    }
-
-    public function getAuthService()
-    {
-        if (null === $this->authService) {
-            $userService = $this->getLocator()->get('edpuser_user_service');
-            $this->authService = $userService->getAuthService();
-        }
-        return $this->authService;
     }
 
     public function getPhotoService()

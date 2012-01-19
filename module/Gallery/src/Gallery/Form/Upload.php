@@ -3,7 +3,7 @@
 namespace Gallery\Form;
 
 use Zend\Form\Form,
-    EdpCommon\Form\ProvidesEventsForm;
+    ZfcBase\Form\ProvidesEventsForm;
 
 class Upload extends ProvidesEventsForm
 {

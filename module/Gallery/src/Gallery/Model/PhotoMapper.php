@@ -3,7 +3,7 @@
 namespace Gallery\Model;
 
 
-use EdpCommon\Mapper\DbMapperAbstract,
+use ZfcBase\Mapper\DbMapperAbstract,
     Gallery\Module;
 
 class PhotoMapper extends DbMapperAbstract implements PhotoMapperInterface
@@ -34,12 +34,18 @@ class PhotoMapper extends DbMapperAbstract implements PhotoMapperInterface
         return $photo;
     }
 
-    public function fetchLatest($count=10)
+    public function fetchLatestFor($displayname, $count=10)
     {
         $db = $this->getReadAdapter();
         $select = $db->select()
             ->from($this->getTableName())
             ->order('date_created DESC');
+
+        if ($displayname) {
+            $select->joinInner('user', 'user.id = photo.created_by', 'displayname');
+            $select->where('user.displayname LIKE ?', array($displayname));
+        }
+
         $this->events()->trigger(__FUNCTION__ . '.pre', $this, array('query' => $select));
         $results = $db->fetchAll($select);
 

@@ -104,18 +104,18 @@ interface PhotoInterface
     public function setDateCreated($dateCreated);
 
    /**
-     * Convert a model class to an array recursively 
-     * 
-     * @param mixed $array 
+     * Convert a model class to an array recursively
+     *
+     * @param mixed $array
      * @return array
      */
     public function toArray($array = false);
 
     /**
-     * Convert an array to an instance of a model class 
-     * 
-     * @param array $array 
-     * @return Edp\Common\Model
+     * Convert an array to an instance of a model class
+     *
+     * @param array $array
+     * @return ZfcBase\Model\ModelAbstract
      */
     public static function fromArray($array);
 

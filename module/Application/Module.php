@@ -35,7 +35,7 @@ class Module implements AutoloaderProvider
     {
         return include __DIR__ . '/config/module.config.php';
     }
-    
+
     public function initializeView($e)
     {
         $app          = $e->getParam('application');
@@ -76,7 +76,7 @@ class Module implements AutoloaderProvider
                                   ->setAutoEscape(false)
                                   ->append('Nennius');
 
-        $basePath = $app->getRequest()->detectBaseUrl();
+        $basePath = $app->getRequest()->getBaseUrl() .'/';
 
         $view->plugin('headLink')->appendStylesheet($basePath . 'css/bootstrap.min.css');
         $view->plugin('headLink')->appendStylesheet($basePath . 'css/site.css');

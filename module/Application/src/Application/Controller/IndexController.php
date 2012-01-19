@@ -13,7 +13,7 @@ class IndexController extends ActionController
         // Rather than use DI, let's use the Service locator this time
         /* @var \Gallery\Photo\Mapper $mapper */
         $mapper = $this->getLocator()->get('gallery_photo_mapper');
-        $latest = $mapper->fetchLatest();
+        $latest = $mapper->fetchLatestFor(null);
         return array('latest' => $latest);
     }
 }
