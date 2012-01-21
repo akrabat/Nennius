@@ -104,6 +104,17 @@ interface PhotoInterface
     public function setFilenameOnDisk($filenameOnDisk);
 
     /*
+     * @return string $filenameSalt
+     */
+    public function getFilenameSalt();
+
+    /**
+     * @param string $filenameSalt the value to be set
+     * @return Photo
+     */
+    public function setFilenameSalt($filenameSalt);
+
+    /*
      * @return string $createdBy
      */
     public function getCreatedBy();

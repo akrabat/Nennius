@@ -13,6 +13,8 @@ return array(
     'gallery' => array(
         'photo_model_class' => 'Gallery\Model\Photo',
         'file_path' => 'data/photos',
+        'public_file_path' => 'public/photos',
+        'public_file_url' => 'photos',
     ),
     'di' => array(
         'instance' => array(
@@ -49,12 +51,30 @@ return array(
                     'writeAdapter' => 'zfcuser_write_db',
                 ),
             ),
+
+            // View Helper
+            'Zend\View\HelperLoader' => array(
+                'parameters' => array(
+                    'map' => array(
+                        'galleryThumbnail' => 'Gallery\View\Helper\GalleryThumbnail',
+                    ),
+                ),
+            ),
+            'Zend\View\HelperBroker' => array(
+                'parameters' => array(
+                    'loader' => 'Zend\View\HelperLoader',
+                ),
+            ),
+            'Gallery\View\Helper\GalleryThumbnail' => array(
+                'parameters' => array(
+                    'photoService' => 'gallery_photo_service',
+                ),
+            ),            
         ),
     ),
     'routes' => array(
         'photos' => array(
             'type' => 'Literal',
-            'priority' => 100,
             'options' => array(
                 'route' => '/photos',
                 'defaults' => array(
@@ -63,22 +83,22 @@ return array(
             ),
             'may_terminate' => true,
             'child_routes' => array(
+                'username' => array(
+                    'type' => 'Zend\Mvc\Router\Http\Segment',
+                    'options' => array(
+                        'route' => '/[:displayname]',
+                        'defaults' => array(
+                            'controller' => 'album',
+                            'action'     => 'index',
+                        ),
+                    ),
+                ),
                 'upload' => array(
                     'type' => 'Literal',
                     'options' => array(
                         'route' => '/upload',
                         'defaults' => array(
                             'controller' => 'upload',
-                            'action'     => 'index',
-                        ),
-                    ),
-                ),
-                'username' => array(
-                    'type' => 'Zend\Mvc\Router\Http\Segment',
-                    'options' => array(
-                        'route' => '/p[:displayname]',
-                        'defaults' => array(
-                            'controller' => 'album',
                             'action'     => 'index',
                         ),
                     ),

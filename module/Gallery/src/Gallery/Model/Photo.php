@@ -16,8 +16,14 @@ class Photo extends ModelAbstract implements PhotoInterface
     protected $width;
     protected $height;
     protected $filename_on_disk;
+    protected $filename_salt;
     protected $created_by;
     protected $date_created;
+
+    public function getFileExtension()
+    {
+        return pathinfo($this->getFilename(), PATHINFO_EXTENSION);
+    }
 
     // -- getters and setters --
     
@@ -107,6 +113,12 @@ class Photo extends ModelAbstract implements PhotoInterface
      */
     public function setMimeType($mimeType)
     {
+        if ($mimeType == 'image/pjpeg') {
+            $mimeType = 'image/jpeg';
+        }
+        if ($mimeType == 'image/x-png') {
+            $mimeType = 'image/png';
+        }
         $this->mime_type = $mimeType;
         return $this;
     }
@@ -182,7 +194,24 @@ class Photo extends ModelAbstract implements PhotoInterface
         $this->filename_on_disk = $filenameOnDisk;
         return $this;
     }
+    
+    /*
+     * @return string $filenameSalt
+     */
+    public function getFilenameSalt()
+    {
+        return $this->filename_salt;
+    }
 
+    /**
+     * @param string $filenameSalt the value to be set
+     * @return Photo
+     */
+    public function setFilenameSalt($filenameSalt)
+    {
+        $this->filename_salt = $filenameSalt;
+        return $this;
+    }
     
     /*
      * @return string $createdBy

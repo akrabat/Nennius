@@ -4,9 +4,12 @@
 
 <?php foreach($latest as $photo) : ?>
 <div class="thumbnail">
-    <div class="title"><a href=""><?php echo $photo->getTitle();?></a></div>
-    <a href=""><img src="<?php $photo->thumbnailUrl(200, 200, 'square'); ?>" /></a>
+    <h2><a href=""><?php echo $photo->getTitle();?></a></h2>
+    <a href=""><?php echo $this->galleryThumbnail($photo, 500, 500, 'bounding'); ?></a>
     <div class="description"><?php echo $this->escape($photo->getDescription());?></div>
+
+
+    <hr>
 </div>
 <?php endforeach; ?>
 

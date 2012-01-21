@@ -23,6 +23,203 @@ class Photo
      * @var EventCollection
      */
     protected $events;
+    
+    public function createThumbnail(PhotoInterface $photo, $width, $height, $type='bounding')
+    {
+        $width = ($width > 0) ? $width : $photo->getWidth();
+        $height = ($height > 0) ? $height : $photo->getHeight();
+
+        $dimensions = $this->calculateTrueSize($photo, $width, $height, $type);
+        $width = $dimensions['width'];
+        $height = $dimensions['height'];
+
+        $thumbnailFilename = $this->thumbnailFilename($photo, $width, $height, $type);
+        if (file_exists($thumbnailFilename)) {
+            return array(
+                'url' => $this->thumbnailUrl($photo, $width, $height, $type),
+                'width' => $width,
+                'height' => $height,
+                );
+
+        }
+
+        $filename = $this->filePath($photo);
+        if ($photo->getWidth() == $width && $photo->getHeight() == $height) {
+            // image is the same size, so overide with the original image
+            copy($filename, $thumbnailFilename);
+            return array(
+                'url' => $this->thumbnailUrl($photo, $width, $height, $type),
+                'width' => $width,
+                'height' => $height,
+                );
+        }
+
+        // not the same size, create correct image
+        switch ($photo->getMimeType()) {
+            case 'image/jpeg':
+                $srcResource = imagecreatefromjpeg($filename);
+                break;
+
+            case 'image/gif':
+                $srcResource = imagecreatefromgif($filename);
+                break;
+
+            case 'image/png':
+                $srcResource = imagecreatefrompng($filename);
+                break;
+            
+            default:
+                throw new Exception('Unsupported mime type');
+        }
+        if (!$srcResource) {
+            throw new Exception('Failed to create image');
+        }
+                
+        switch ($type)
+        {
+            case 'bounding':
+                $destResource = $this->createBoundingThumbnail($photo, $srcResource, $width, $height);
+                break;
+                
+            case 'square':
+                $destResource = $this->createSquareThumbnail($photo, $srcResource, $width);
+                break;
+        }
+
+        switch ($photo->getMimeType()) {
+            case 'image/jpeg':
+                imagejpeg($destResource, $thumbnailFilename, 100);
+                break;
+
+            case 'image/gif':
+                imagecolortransparent($destResource);
+                imagegif($destResource, $thumbnailFilename);
+                break;
+
+            case 'image/png':
+                imagepng($destResource, $thumbnailFilename);
+                break;
+            
+            default:
+                throw new Exception('Unsupported mime type');
+        }
+
+        imagedestroy($srcResource);
+        imagedestroy($destResource);
+
+        return array(
+            'url' => $this->thumbnailUrl($photo, $width, $height, $type),
+            'width' => $width,
+            'height' => $height,
+        );
+        
+    }
+
+    public function calculateTrueSize(PhotoInterface $photo, $width, $height, $type)
+    {
+        $newWidth = $width;
+        $newHeight = $height;
+
+        switch ($type) {
+            case 'square':
+                $newWidth = $width;
+                $newHeight = $height;
+                break;
+            
+            case 'bounding':
+                if ($photo->getWidth() < $width && $photo->getHeight() < $height) {
+                    $newWidth = $photo->getWidth();
+                    $newHeight = $photo->getHeight();
+                } else {
+                    $newWidth = $width;
+                    $newHeight = intval($photo->getHeight() * $width / $photo->getWidth());
+                    if ($height > 0 && $newHeight > $height)
+                    {
+                        $newHeight = $height;
+                        $newWidth = intval($photo->getWidth() * $height / $photo->getHeight());
+                    }
+                }
+                break;
+        }
+
+        return array(
+            'width' => $newWidth,
+            'height' => $newHeight,
+            );
+    }
+
+    protected function createBoundingThumbnail(PhotoInterface $photo, $srcResource, $width, $height)
+    {
+        switch ($photo->getMimeType()) {
+            case 'image/jpeg':
+                $destResource = imagecreatetruecolor($width, $height);
+                imagecopyresampled($destResource, $srcResource, 0, 0, 0, 0, 
+                    $width, $height, $photo->getWidth(), $photo->getHeight());
+                break;
+
+            default:
+                $destResource = imagecreate($width, $height);
+                imagecopyresized($destResource, $srcResource, 0, 0, 0, 0, 
+                    $width, $height, $photo->getWidth(), $photo->getHeight());
+        }
+        
+        return $destResource;
+    }
+
+    protected function createSquareThumbnail(PhotoInterface $photo, $srcResource, $size)
+    {
+        $largestSquareSize = $photo->getWidth();
+        if($photo->getWidth() > $photo->getHeight()) {
+            $largestSquareSize = $photo->getHeight();
+        }
+
+        $offset_x = (int)(($photo->getWidth() - $largestSquareSize) / 2);
+        $offset_y = (int)(($photo->getHeight() - $largestSquareSize) / 2);
+        
+        switch ($photo->getMimeType()) {
+            case 'image/jpeg':
+                $destResource = imagecreatetruecolor($size, $size);
+                imagecopyresampled($destResource, $srcResource, 0, 0, $offset_x, $offset_y, 
+                    $size, $size, $largestSquareSize, $largestSquareSize);
+                break;
+
+            default:
+                $destResource = imagecreate($largestSquareSize, $largestSquareSize);
+                imagecopyresized($destResource, $srcResource, 0, 0, $offset_x, $offset_y, 
+                    $size, $size, $largestSquareSize, $largestSquareSize);
+        }
+        
+        return $destResource;
+    }
+
+
+
+    protected function thumbnailFilename($photo, $width, $height, $type)
+    {
+        $filePath = realpath(Module::getOption('public_file_path'))
+                  . '/' . $photo->getCreatedBy()
+                  . '/' . $photo->getId();
+
+        if (!is_dir($filePath)) {
+            mkdir($filePath, 0777, true);
+        }
+
+        $filePath .= '/' . sha1($photo->getFilenameSalt() . $width . $height . $type)
+                  .  '.' . $photo->getFileExtension();
+
+        return $filePath;
+    }
+
+    protected function thumbnailUrl($photo, $width, $height, $type)
+    {
+        $url = Module::getOption('public_file_url')
+            . '/' . $photo->getCreatedBy()
+            . '/' . $photo->getId()
+            . '/' . sha1($photo->getFilenameSalt() . $width . $height . $type)
+            . '.' . $photo->getFileExtension();
+
+        return $url;
+    }    
 
     protected function filePath(PhotoInterface $photo, $includeFilename = true) 
     {
@@ -53,7 +250,7 @@ class Photo
         $photo->setDescription($values['description']);
         $photo->setCreatedBy($user->getUserId());
         $photo->setFilename($values['file']);
-        $photo->setFilenameSalt(sha1(mt_rand(1, 4294967296).microtime()));
+        $photo->setFilenameSalt(sha1(mt_rand().microtime()));
 
         // retrieve file
         $filePath = $this->filePath($photo, false);
