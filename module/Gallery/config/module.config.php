@@ -53,17 +53,12 @@ return array(
     ),
     'routes' => array(
         'photos' => array(
-            'type' => 'Zend\Mvc\Router\Http\Segment',
+            'type' => 'Literal',
             'priority' => 100,
             'options' => array(
-                //'route' => '/photos/a/[:displayname]',
                 'route' => '/photos',
-                'constraints' => array(
-                    'displayname' => 'a[a-zA-Z0-9_-]*',
-                ),
                 'defaults' => array(
                     'controller' => 'album',
-                    'displayname' => '',
                 ),
             ),
             'may_terminate' => true,
@@ -74,6 +69,16 @@ return array(
                         'route' => '/upload',
                         'defaults' => array(
                             'controller' => 'upload',
+                            'action'     => 'index',
+                        ),
+                    ),
+                ),
+                'username' => array(
+                    'type' => 'Zend\Mvc\Router\Http\Segment',
+                    'options' => array(
+                        'route' => '/p[:displayname]',
+                        'defaults' => array(
+                            'controller' => 'album',
                             'action'     => 'index',
                         ),
                     ),
