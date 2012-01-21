@@ -73,6 +73,9 @@ class Listener implements ListenerAggregate
 
     public function renderView(MvcEvent $e)
     {
+        // set the basePath
+        $this->view->plugin('basePath')->setBasePath($e->getRequest()->getBaseUrl());
+
         $response = $e->getResponse();
         if (!$response->isSuccess()) {
             return;
