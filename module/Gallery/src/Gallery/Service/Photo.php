@@ -5,6 +5,7 @@ namespace Gallery\Service;
 use Gallery\Form\Upload as UploadForm,
     Gallery\Module,
     Gallery\Model\PhotoMapper,
+    Gallery\Model\PhotoInterface,
     Zend\EventManager\EventCollection,
     ZfcUser\Model\User,
     Zend\EventManager\EventManager;
@@ -23,6 +24,18 @@ class Photo
      */
     protected $events;
 
+    protected function filePath(PhotoInterface $photo, $includeFilename = true) 
+    {
+        $filePath = realpath(Module::getOption('file_path'));
+        $filePath .= '/' . $photo->getCreatedBy();
+
+        if ($includeFilename) {
+            $filePath .= '/' . $photo->getFilenameOnDisk();
+        }
+
+        return $filePath;
+    }
+
     /**
      * createFromForm
      *
@@ -31,43 +44,44 @@ class Photo
      */
     public function createFromForm(UploadForm $form, User $user)
     {
-        $uploadedData = $form->getValues();
+        $values = $form->getValues();
 
+        // create entity
         $class = Module::getOption('photo_model_class');
         $photo = new $class;
-        $photo->setTitle($form->getValue('title'));
-        $photo->setDescription($form->getValue('description'));
-
-        $this->events()->trigger(__FUNCTION__, $this, array('photo' => $photo, 'form' => $form));
-        $this->photoMapper->persist($photo);
+        $photo->setTitle($values['title']);
+        $photo->setDescription($values['description']);
+        $photo->setCreatedBy($user->getUserId());
+        $photo->setFilename($values['file']);
+        $photo->setFilenameSalt(sha1(mt_rand(1, 4294967296).microtime()));
 
         // retrieve file
-
-        $filePath = realpath(Module::getOption('file_path')) . '/' . $photo->getId();
+        $filePath = $this->filePath($photo, false);
         if (!is_dir($filePath)) {
-            mkdir($filePath);
+            mkdir($filePath, 0777, true);
         }
-        $filename = substr(md5(microtime() . mt_rand()),0,10) . '.' . pathinfo($form->file->getValue(), PATHINFO_EXTENSION);
         $form->file->setDestination($filePath);
+
+        $filename = md5($values['file']) . '.' . pathinfo($values['file'], PATHINFO_EXTENSION);
         $form->file->addFilter('Rename', $filename);
         $form->file->setOptions(array('useByteString' => false));
-        $photo->setFilename($form->file->getValue());
 
         if (!$form->file->receive()) {
-            print "Upload error";
+            throw new Exception("Upload error");
         }
-        $info = $form->file->getFileInfo();
-        $fullFilePath = $form->file->getFileName();
 
         $photo->setFilenameOnDisk($filename);
         $photo->setMimeType($form->file->getMimeType());
         $photo->setSize($form->file->getFileSize());
 
-        $imageSize = getimagesize($fullFilePath);
+        $imageSize = getimagesize($this->filePath($photo));
         $photo->setWidth($imageSize[0]);
         $photo->setHeight($imageSize[1]);
 
+        // store entity
+        $this->events()->trigger(__FUNCTION__.'.pre', $this, array('photo' => $photo, 'form' => $form));
         $this->photoMapper->persist($photo);
+        $this->events()->trigger(__FUNCTION__.'.post', $this, array('photo' => $photo, 'form' => $form));
 
         return $photo;
     }

@@ -91,6 +91,28 @@ interface PhotoInterface
      * @return Photo
      */
     public function setHeight($height);
+    
+    /*
+     * @return string $filenameOnDisk
+     */
+    public function getFilenameOnDisk();
+
+    /**
+     * @param string $filenameOnDisk the value to be set
+     * @return Photo
+     */
+    public function setFilenameOnDisk($filenameOnDisk);
+
+    /*
+     * @return string $createdBy
+     */
+    public function getCreatedBy();
+
+    /**
+     * @param string $createdBy the value to be set
+     * @return Photo
+     */
+    public function setCreatedBy($createdBy);
 
     /*
      * @return DateTime dateCreated

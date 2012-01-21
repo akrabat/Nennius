@@ -16,12 +16,8 @@ class Photo extends ModelAbstract implements PhotoInterface
     protected $width;
     protected $height;
     protected $filename_on_disk;
+    protected $created_by;
     protected $date_created;
-
-
-    public function thumbnailUrl($width, $height, $type='bounding')
-    {
-    }
 
     // -- getters and setters --
     
@@ -168,6 +164,7 @@ class Photo extends ModelAbstract implements PhotoInterface
         $this->height = $height;
         return $this;
     }
+    
     /*
      * @return string $filenameOnDisk
      */
@@ -186,6 +183,25 @@ class Photo extends ModelAbstract implements PhotoInterface
         return $this;
     }
 
+    
+    /*
+     * @return string $createdBy
+     */
+    public function getCreatedBy()
+    {
+        return $this->created_by;
+    }
+
+    /**
+     * @param string $createdBy the value to be set
+     * @return Photo
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->created_by = $createdBy;
+        return $this;
+    }
+        
     /*
      * @return DateTime $dateCreated
      */
