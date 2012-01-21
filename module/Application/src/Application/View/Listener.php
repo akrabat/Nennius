@@ -24,6 +24,8 @@ class Listener implements ListenerAggregate
     {
         $this->view   = $renderer;
         $this->layout = $layout;
+
+        $this->view->doctype('HTML5');
     }
 
     public function setDisplayExceptionsFlag($flag)
