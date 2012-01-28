@@ -16,14 +16,6 @@ return array(
                     ),
                 ),
             ),
-            'Zend\View\Resolver\TemplateMapResolver' => array(
-                '__construct' => array(
-                    'map' => array(
-                        'required' => false,
-                        'type'     => false,
-                    ),
-                ),
-            ),
             'Zend\Mvc\View\DefaultRenderingStrategy' => array(
                 'setDefaultLayout' => array(
                     'defaultLayout' => array(
@@ -72,20 +64,16 @@ return array(
                     'loader' => 'Zend\Mvc\Controller\PluginLoader',
                 ),
             ),
-            
-            
-            'Zend\View\Resolver\TemplateMapResolver' => array('parameters' => array(
-                'Zend\View\Resolver\TemplateMapResolver::__construct:map' => array(
-                    'error'        => __DIR__ . '/../views/error/error.phtml',
-                    'layout'       => __DIR__ . '/../views/layouts/layout.phtml',
-                    'index/index'  => __DIR__ . '/../views/index/index.phtml',
-                ),
-            )),
 
             'Zend\View\PhpRenderer' => array(
                 'parameters' => array(
-                    'resolver' => 'Zend\View\Resolver\TemplateMapResolver',
+                    'resolver' => 'Zend\View\Resolver\TemplatePathStack',
                     'broker'   => 'Zend\View\HelperBroker',
+                    'options'  => array(
+                        'script_paths' => array(
+                            'application' => __DIR__ . '/../views',
+                        ),
+                    ),
                 )
             ),
 
