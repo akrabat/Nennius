@@ -55,8 +55,7 @@ class RenderingStrategy extends DefaultRenderingStrategy
 
         $renderer->doctype('HTML5');
         $renderer->headTitle()->setSeparator(' - ')
-                              ->setAutoEscape(false)
-                              ->append('Nennius');
+                              ->setAutoEscape(false);
 
         return parent::render($e);
     }
