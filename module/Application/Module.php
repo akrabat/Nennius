@@ -38,55 +38,32 @@ class Module implements AutoloaderProvider
 
     public function initializeView($e)
     {
-        $app          = $e->getParam('application');
-        $locator      = $app->getLocator();
-        $config       = $e->getParam('config');
-        $view         = $this->getView($app);
-        $viewListener = $this->getViewListener($view, $config);
-        $app->events()->attachAggregate($viewListener);
-        $events       = StaticEventManager::getInstance();
-        $viewListener->registerStaticListeners($events, $locator);
-    }
-
-    protected function getViewListener($view, $config)
-    {
-        if ($this->viewListener instanceof View\Listener) {
-            return $this->viewListener;
-        }
-
-        $viewListener       = new View\Listener($view, $config->layout);
-        $viewListener->setDisplayExceptionsFlag($config->display_exceptions);
-
-        $this->viewListener = $viewListener;
-        return $viewListener;
-    }
-
-    protected function getView($app)
-    {
-        if ($this->view) {
-            return $this->view;
-        }
-
+        $app     = $e->getParam('application');
+        $config  = $e->getParam('config');
         $locator = $app->getLocator();
-        $view    = $locator->get('view');
-        $url     = $view->plugin('url');
-        $url->setRouter($app->getRouter());
 
-        $view->plugin('headTitle')->setSeparator(' - ')
-                                  ->setAutoEscape(false)
-                                  ->append('Nennius');
+        // Get and attach view listener
+        // $listener = $locator->get('Zend\Mvc\View\DefaultRenderingStrategy');
+        $listener = $locator->get('Application\View\RenderingStrategy');
+        $app->events()->attachAggregate($listener);
 
-        $basePath = $app->getRequest()->getBaseUrl() .'/';
+        // Ensure PhpRenderer is properly setup
+        $router   = $app->getRouter();
+        $view     = $locator->get('Zend\View\View');
+        $renderer = $locator->get('Zend\View\PhpRenderer');
+        $view->addRenderer($renderer);
 
-        $view->plugin('headLink')->appendStylesheet($basePath . 'css/bootstrap.min.css');
-        $view->plugin('headLink')->appendStylesheet($basePath . 'css/site.css');
+        $url = $renderer->plugin('url');
+        $url->setRouter($router);
 
-        $html5js = '<script src="' . $basePath . 'js/html5.js"></script>';
-        $view->plugin('placeHolder')->__invoke('html5js')->set($html5js);
-        $favicon = '<link rel="shortcut icon" href="' . $basePath . 'images/favicon.ico">';
-        $view->plugin('placeHolder')->__invoke('favicon')->set($favicon);
+        $persistent = $renderer->placeholder('layout');
+        foreach ($config->view as $var => $value) {
+            if ($value instanceof Config) {
+                $value = new Config($value->toArray(), true);
+            }
+            $persistent->{$var} = $value;
+        }
 
-        $this->view = $view;
-        return $view;
     }
+
 }

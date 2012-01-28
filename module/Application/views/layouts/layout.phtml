@@ -50,7 +50,9 @@
     </div>
 
     <div class="container">
-      <?php echo $this->raw('content'); ?>
+      <?php //echo $this->raw('content'); ?>
+      <?php echo $this->content; ?>
+      <?php //echo $this->placeholder('content') ?>
 
       <footer>
         <p>&copy; 2011<?php echo date('Y') != 2011 ?  ', '.date('Y') : ''; ?> by Rob Allen. All rights reserved.</p>
