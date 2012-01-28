@@ -36,8 +36,7 @@ class IndexController extends ActionController
 
         $renderer->doctype('HTML5');
         $renderer->headTitle()->setSeparator(' - ')
-                              ->setAutoEscape(false)
-                              ->append('Nennius');
+                              ->setAutoEscape(false);
 
 
         return parent::dispatch($request, $response);
