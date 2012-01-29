@@ -10,7 +10,7 @@ use Zend\Mvc\View\DefaultRenderingStrategy;
  */
 class RenderingStrategy extends DefaultRenderingStrategy
 {
-    protected $defaultLayout = 'layouts/layout.phtml';
+    protected $defaultLayout = 'layouts/layout';
     
     /**
      * Render the view
