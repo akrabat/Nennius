@@ -31,15 +31,7 @@ return array(
                 'gallery_read_db'       => 'gallery_write_db',
 
             ),
-            'Zend\View\PhpRenderer' => array(
-                'parameters' => array(
-                    'options'  => array(
-                        'script_paths' => array(
-                            'album' => __DIR__ . '/../views',
-                        ),
-                    ),
-                ),
-            ),
+
             'gallery_photo_service' => array(
                 'parameters' => array(
                     'photoMapper'     => 'gallery_photo_mapper',
@@ -49,6 +41,17 @@ return array(
                 'parameters' => array(
                     'readAdapter'  => 'zfcuser_read_db',
                     'writeAdapter' => 'zfcuser_write_db',
+                ),
+            ),
+
+            // Set up the view layer.
+            'Zend\View\Resolver\TemplatePathStack' => array(
+                'parameters' => array(
+                    'options'  => array(
+                        'script_paths' => array(
+                            'gallery' => __DIR__ . '/../view',
+                        ),
+                    ),
                 ),
             ),
 
@@ -69,41 +72,49 @@ return array(
                 'parameters' => array(
                     'photoService' => 'gallery_photo_service',
                 ),
+            ),
+
+
+            // Setup the router and routes
+            'Zend\Mvc\Router\RouteStack' => array(
+                'parameters' => array(
+                    'routes' => array(
+                        'photos' => array(
+                            'type' => 'Literal',
+                            'options' => array(
+                                'route' => '/photos',
+                                'defaults' => array(
+                                    'controller' => 'album',
+                                    'action'     => 'index',
+                                ),
+                            ),
+                            'may_terminate' => true,
+                            'child_routes' => array(
+                                'username' => array(
+                                    'type' => 'Zend\Mvc\Router\Http\Segment',
+                                    'options' => array(
+                                        'route' => '/[:displayname]',
+                                        'defaults' => array(
+                                            'controller' => 'album',
+                                            'action'     => 'index',
+                                        ),
+                                    ),
+                                ),
+                                'upload' => array(
+                                    'type' => 'Literal',
+                                    'options' => array(
+                                        'route' => '/upload',
+                                        'defaults' => array(
+                                            'controller' => 'upload',
+                                            'action'     => 'index',
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
             ),            
-        ),
-    ),
-    'routes' => array(
-        'photos' => array(
-            'type' => 'Literal',
-            'options' => array(
-                'route' => '/photos',
-                'defaults' => array(
-                    'controller' => 'album',
-                ),
-            ),
-            'may_terminate' => true,
-            'child_routes' => array(
-                'username' => array(
-                    'type' => 'Zend\Mvc\Router\Http\Segment',
-                    'options' => array(
-                        'route' => '/[:displayname]',
-                        'defaults' => array(
-                            'controller' => 'album',
-                            'action'     => 'index',
-                        ),
-                    ),
-                ),
-                'upload' => array(
-                    'type' => 'Literal',
-                    'options' => array(
-                        'route' => '/upload',
-                        'defaults' => array(
-                            'controller' => 'upload',
-                            'action'     => 'index',
-                        ),
-                    ),
-                ),
-            ),
         ),
     ),
 );

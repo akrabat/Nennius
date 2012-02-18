@@ -38,31 +38,15 @@ class Module implements AutoloaderProvider
 
     public function initializeView($e)
     {
-        $app     = $e->getParam('application');
-        $config  = $e->getParam('config');
-        $locator = $app->getLocator();
+        $application  = $e->getParam('application');
+        $basePath     = $application->getRequest()->getBasePath();
+        $locator      = $application->getLocator();
+        $renderer     = $locator->get('Zend\View\Renderer\PhpRenderer');
 
-        // Get and attach view listener
-        // $listener = $locator->get('Zend\Mvc\View\DefaultRenderingStrategy');
-        $listener = $locator->get('Application\View\RenderingStrategy');
-        $app->events()->attachAggregate($listener);
-
-        // Ensure PhpRenderer is properly setup
-        $router   = $app->getRouter();
-        $view     = $locator->get('Zend\View\View');
-        $renderer = $locator->get('Zend\View\PhpRenderer');
-        $view->addRenderer($renderer);
-
-        $url = $renderer->plugin('url');
-        $url->setRouter($router);
-
-        $persistent = $renderer->placeholder('layout');
-        foreach ($config->view as $var => $value) {
-            if ($value instanceof Config) {
-                $value = new Config($value->toArray(), true);
-            }
-            $persistent->{$var} = $value;
-        }
+        $renderer->doctype('HTML5');
+        $renderer->plugin('url')->setRouter($application->getRouter());
+        $renderer->doctype()->setDoctype('HTML5');
+        $renderer->plugin('basePath')->setBasePath($basePath);
 
     }
 
