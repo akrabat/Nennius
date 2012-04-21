@@ -48,7 +48,7 @@ class GalleryThumbnail extends AbstractHelper
     /**
      * Get PhotoService.
      *
-     * @return AuthenticationService
+     * @return PhotoService
      */
     public function getPhotoService()
     {

@@ -10,38 +10,6 @@ use Zend\Mvc\Controller\ActionController,
 class IndexController extends ActionController
 {
     protected $photoService;
-    
-    /*
-     * One option. Overide dispatch in order to set up the basePath related stuff.
-     */
-    /*
-    public function dispatch(Request $request, Response $response = null)
-    {
-        $renderer = $this->getLocator()->get('Zend\View\PhpRenderer');
-
-        $basePath = $request->getBaseUrl();
-
-        $renderer->plugin('basePath')->setBasePath($basePath);
-        $renderer->plugin('headLink')->appendStylesheet($basePath . '/css/bootstrap.min.css');
-        $renderer->plugin('headLink')->appendStylesheet($basePath . '/css/site.css');
-
-        $html5js = '<script src="' . $basePath . 'js/html5.js"></script>';
-        $renderer->plugin('placeHolder')->__invoke('html5js')->set($html5js);
-        
-        $renderer->headLink(array(
-            'rel'  => 'shortcut icon',
-            'type' => 'image/vnd.microsoft.icon',
-            'href' => $basePath . '/images/favicon.ico',
-        ));
-
-        $renderer->doctype('HTML5');
-        $renderer->headTitle()->setSeparator(' - ')
-                              ->setAutoEscape(false);
-
-
-        return parent::dispatch($request, $response);
-    }
-    */
 
     public function indexAction()
     {

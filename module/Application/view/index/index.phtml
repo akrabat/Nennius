@@ -8,6 +8,8 @@
 <div class="thumbnail">
     <h2><a href=""><?php echo $photo->getTitle();?></a></h2>
     <a href=""><?php echo $this->galleryThumbnail($photo, 500, 500, 'bounding'); ?></a>
+    <div class="photo-info">Posted by <?php echo $photo->getCreatedByName(); ?> 
+        on <?php echo $photo->getDateCreated()->format('jS F Y \a\t g:i a'); ?></div>
     <div class="description"><?php echo $this->escape($photo->getDescription());?></div>
 
 

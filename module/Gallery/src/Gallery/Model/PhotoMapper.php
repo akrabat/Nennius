@@ -9,10 +9,25 @@ use ZfcBase\Mapper\DbMapperAbstract,
 class PhotoMapper extends DbMapperAbstract implements PhotoMapperInterface
 {
     protected $tableName = 'photo';
+    protected $fields    = array(
+            'id',
+            'title',
+            'description',
+            'filename',
+            'mime_type',
+            'size',
+            'width',
+            'height',
+            'filename_on_disk',
+            'filename_salt',
+            'created_by',
+            'date_created',
+        );
 
     public function persist(PhotoInterface $photo)
     {
-        $data = $photo->toArray();
+        $data = array_intersect_key($photo->toArray(), array_flip($this->fields));
+
         foreach ($data as $key => $value) {
             if ($value instanceof \DateTime) {
                 $value->setTimeZone(new \DateTimeZone('UTC'));
@@ -34,16 +49,16 @@ class PhotoMapper extends DbMapperAbstract implements PhotoMapperInterface
         return $photo;
     }
 
-    public function fetchLatestFor($displayname, $count=10)
+    public function fetchLatestFor($displayName, $count=10)
     {
         $db = $this->getReadAdapter();
         $select = $db->select()
-            ->from($this->getTableName())
+        $select->from($this->getTableName())
+            ->joinLeft('user', 'photo.created_by = user.user_id', 'display_name as created_by_name')
             ->order('date_created DESC');
 
-        if ($displayname) {
-            $select->joinInner('user', 'user.id = photo.created_by', 'displayname');
-            $select->where('user.displayname LIKE ?', array($displayname));
+        if ($displayName) {
+            $select->where('user.display_name LIKE ?', array($displayname));
         }
 
         $this->events()->trigger(__FUNCTION__ . '.pre', $this, array('query' => $select));
@@ -64,6 +79,7 @@ class PhotoMapper extends DbMapperAbstract implements PhotoMapperInterface
         $db = $this->getReadAdapter();
         $sql = $db->select()
             ->from($this->getTableName())
+            ->join('user', 'user.user_id = photo.created_by', 'display_name as created_by_name')
             ->where('id = ?', (int)$id);
         $this->events()->trigger(__FUNCTION__ . '.pre', $this, array('query' => $sql));
         $row = $db->fetchRow($sql);

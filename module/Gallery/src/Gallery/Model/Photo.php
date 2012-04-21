@@ -20,6 +20,8 @@ class Photo extends ModelAbstract implements PhotoInterface
     protected $created_by;
     protected $date_created;
 
+    protected $created_by_name;
+
     public function getFileExtension()
     {
         return pathinfo($this->getFilename(), PATHINFO_EXTENSION);
@@ -255,4 +257,16 @@ class Photo extends ModelAbstract implements PhotoInterface
         }
         return $this;
     }
+
+    public function getCreatedByName()
+    {
+        return $this->created_by_name;
+    }
+
+    public function setCreatedByName($createdByName)
+    {
+        $this->created_by_name = $createdByName;
+        return $this;
+    }
+
 }

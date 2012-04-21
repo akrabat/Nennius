@@ -63,11 +63,8 @@ return array(
                     ),
                 ),
             ),
-            'Zend\View\HelperBroker' => array(
-                'parameters' => array(
-                    'loader' => 'Zend\View\HelperLoader',
-                ),
-            ),
+
+            // inject the photo service into the view helper as it'll be needed
             'Gallery\View\Helper\GalleryThumbnail' => array(
                 'parameters' => array(
                     'photoService' => 'gallery_photo_service',
